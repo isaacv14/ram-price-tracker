@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 import requests
-import pandas as pd
 
 def Scrapping(url, html_element, html_class, data_transformer):
   # Extract
