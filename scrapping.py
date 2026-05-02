@@ -2,29 +2,34 @@ from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 
-# Extract
+def Scrapping(url, html_element, html_class, data_transformer):
+  # Extract
 
-url = 'https://listado.mercadolibre.com.mx/memoria-ram'
-headers = { # use headers to no be detected by web
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
-}
+  headers = { # use headers to no be detected by web
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+  }
 
-res = requests.get(url, headers=headers)
-soup = BeautifulSoup(res.text, "html.parser")
+  res = requests.get(url, headers=headers)
+  if res.status_code != 200:
+    print(f"Error: Blocked or Not Found (Status {res.status_code})")
+    return
+  
+  soup = BeautifulSoup(res.text, "html.parser")
 
-prices = soup.find_all("span", class_="andes-money-amount__fraction")
+  prices = soup.find_all(html_element, html_class)
 
-# Transform
+  # Transform
 
-data = []
+  data = []
 
-for price in prices:
-  price_text = price.text
-  find_coma = price_text.find(",")
+  for price in prices:
+    price_text = price.text
+    
+    # Transform data for correct append of data
+    price_text = data_transformer(price_text)
 
-  if find_coma != -1: # if comma was found, remove it
-    price_text = price_text.replace(",","")
-
-  price_int = int(price_text)
-  data.append(price_int)
-
+    price_int = int(float(price_text))
+    data.append(price_int)
+    
+  print(data) # just to check
+  return data
