@@ -1,11 +1,19 @@
-from scipy import stats
 import numpy as np
 from cleaning_scrapping import mercado_libre_mx as ml_mx
 from scrapping import Scrapping
 from outlier_filter import OutlierFilter
+import time
 
-mercado_libre_mx = Scrapping(ml_mx.url, ml_mx.html_element, ml_mx.html_class, ml_mx.cleaning_function)
+inicio = time.time()
 
-ml_mx_filtered = OutlierFilter(mercado_libre_mx)
+sites = [
+  Scrapping(ml_mx.url, ml_mx.html_element, ml_mx.html_class, ml_mx.cleaning_function),
+]
 
-print(mercado_libre_mx)
+total_data = []
+
+for site in sites:
+  clean_data = OutlierFilter(site)
+  total_data.append(clean_data)
+  
+np_average = np.mean(total_data)
