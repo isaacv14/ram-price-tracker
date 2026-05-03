@@ -1,11 +1,7 @@
 import numpy as np
-from cleaning_scrapping import mercado_libre_mx as ml_mx
 from scrapping import Scrapping
 from outlier_filter import OutlierFilter
-import time
-
-# Track execution time
-inicio = time.time()
+from cleaning_scrapping import mercado_libre_mx as ml_mx
 
 # Configure sites to scrape (URL, HTML element, CSS class, cleaning function)
 sites = [
