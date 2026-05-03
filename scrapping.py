@@ -30,5 +30,5 @@ def Scrapping(url, html_element, html_class, data_transformer):
     price_int = int(float(price_text))
     data.append(price_int)
     
-  print(data) # just to check
+  #print(data) # just to check
   return data
