@@ -15,5 +15,5 @@ total_data = []
 for site in sites:
   clean_data = OutlierFilter(site)
   total_data.append(clean_data)
-  
+
 np_average = np.mean(total_data)

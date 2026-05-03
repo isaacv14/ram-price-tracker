@@ -3,7 +3,7 @@ import numpy as np
 def OutlierFilter(data_array):
   sorted_array = sorted(data_array)
 
-  # Calculate number at 35% & 85% position
+  # Calculate number at 35% & 95% position
   lower_number, upper_number= np.percentile(sorted_array, [35, 95])
 
   # filtering numbers bellow 35% and above 85%
