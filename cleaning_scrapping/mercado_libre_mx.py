@@ -2,21 +2,24 @@ import requests
 import os
 from dotenv import load_dotenv
 
-# Variables are being exported
+# Mercado Libre Mexico RAM listing configuration
 url = 'https://listado.mercadolibre.com.mx/memoria-ram'
 html_element = "span"
 html_class = "andes-money-amount__fraction"
 
-# Loading Key en .env
+# Load API key from .env file
 load_dotenv()
 api_key = os.getenv('CURRENCY_MX_API_KEY')
 
+# Fetch current USD to MXN exchange rate
 currency_API = requests.get(f'https://api.currencyapi.com/v3/latest?apikey={api_key}&currencies=MXN')
 currency_value = currency_API.json().get('data').get('MXN').get('value')
 
-# Function called in main to be used in Scrapping function
 def cleaning_function(price_text):
+  """Clean price text and convert from MXN to USD."""
+  # Remove thousand separators
   data_cleaned = price_text.replace(",","")
 
+  # Convert to USD using the current exchange rate
   usd_parse = int(data_cleaned) / currency_value
   return str(usd_parse)
