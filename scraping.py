@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 
-def Scrapping(url, html_element, html_class, data_transformer):
+def Scraping(url, html_element, html_class, data_transformer):
   """Scrape prices from a webpage and return as a list of integers."""
   # Extract HTML content
   headers = {

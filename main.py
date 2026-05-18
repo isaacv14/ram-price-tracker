@@ -1,11 +1,11 @@
 import numpy as np
-from scrapping import Scrapping
+from scraping import Scraping
 from outlier_filter import OutlierFilter
-from cleaning_scrapping import mercado_libre_mx as ml_mx
+from cleaning_scraping import mercado_libre_mx as ml_mx
 
 # Configure sites to scrape (URL, HTML element, CSS class, cleaning function)
 sites = [
-  Scrapping(ml_mx.url, ml_mx.html_element, ml_mx.html_class, ml_mx.cleaning_function),
+  Scraping(ml_mx.url, ml_mx.html_element, ml_mx.html_class, ml_mx.cleaning_function),
 ]
 
 # Scrape and filter outliers from each site
