@@ -26,4 +26,4 @@ def Scraping(url, html_element, html_class, data_transformer):
     price_int = int(float(price_text))
     data.append(price_int)
 
-  return data
+  return list(data)
