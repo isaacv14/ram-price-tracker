@@ -1,5 +1,8 @@
 from bs4 import BeautifulSoup
+from crawlbase import CrawlingAPI
 import requests
+from dotenv import load_dotenv
+import os
 
 def Scraping(url, html_element, html_class, data_transformer):
   """Scrape prices from a webpage and return as a list of integers."""
@@ -25,5 +28,39 @@ def Scraping(url, html_element, html_class, data_transformer):
     price_text = data_transformer(price_text)
     price_int = int(float(price_text))
     data.append(price_int)
+
+  return list(data)
+
+# scrap function using crawlbase for bypassing anti-scraping
+load_dotenv()
+crawl_api_key = CrawlingAPI({'token': os.getenv('CRAWLBASE_API_KEY')})
+
+def CrawlbaseScrape(url, html_element, html_class, data_transformer):
+  data = []
+
+  try:
+    response = crawl_api_key.get(url)
+    
+    if response['status_code'] == 200:
+      html_content = response['body']
+      #print("Successfully fetched HTML!")
+        
+      # Check Crawlbase internal router and site status
+      #print(f"Original Site Status: {response['headers']['original_status']}")
+      #print(f"Crawlbase Route Status: {response['headers']['pc_status']}")
+        
+      # Next step: Pass 'html_content' to your parser or ETL logic
+      soup = BeautifulSoup(html_content, "html.parser")
+      prices = soup.find_all(html_element, class_=html_class)
+
+      for price in prices:
+        price_text = price.text
+        # Apply the site-specific cleaning function
+        price_text = data_transformer(price_text)
+        price_int = int(float(price_text))
+        data.append(price_int)
+        
+  except Exception as e:
+    print(f"An error occurred during extraction: {e}")
 
   return list(data)
