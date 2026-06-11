@@ -22,4 +22,10 @@ for site in sites:
 
 # Calculate average price from filtered data
 np_average = np.mean(total_data)
-print(f"Average Price: {np_average}")
+final_average = round(np_average, 4)
+print(f"Average Price: {final_average}")
+
+if np_average > 0: # Only insert into database if we have a valid average price
+  get_db_connection(final_average)
+else:
+  print("No valid price data to insert into the database.")

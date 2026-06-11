@@ -23,19 +23,23 @@ config = {
 
 # Establish connection as usual
 def get_db_connection(price):
-  try:
-    conn = mysql.connector.connect(**config)
-    print("Successfully connected securely using environment variables!")
-    
-    cur = conn.cursor(dictionary=True)
-    cur.execute(f"""
-      INSERT INTO market (market_date, price)
-      VALUES (curdate(), {price});            
-    """)
-    version = cur.fetchone()
-    
-  except mysql.connector.Error as err:
-    print(f"Connection failed: {err}")
-  finally:
-    if 'conn' in locals() and conn.is_connected():
-      conn.close()
+    try:
+        conn = mysql.connector.connect(**config)
+        print("Successfully connected securely using environment variables!")
+
+        cur = conn.cursor(dictionary=True)
+        cur.execute(
+            "INSERT INTO market (market_date, price) VALUES (CURDATE(), %s)",
+            (price,)
+        )
+        conn.commit()
+        print(f"Inserted row ID: {cur.lastrowid}")
+
+    except mysql.connector.Error as err:
+        print(f"Connection failed: {err}")
+        conn.rollback()
+
+    finally:
+        if 'conn' in locals() and conn.is_connected():
+            cur.close()
+            conn.close()
