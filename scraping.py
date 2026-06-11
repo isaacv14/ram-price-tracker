@@ -56,7 +56,6 @@ def PlayWrightScraping(url, html_element, html_class, data_transformer):
     browser.close()
   
   soup = BeautifulSoup(html_content, "html.parser")
-  print(soup.prettify()) # REMOVE LATER
   prices = soup.find_all(html_element, class_=html_class)
 
   # Transform raw HTML text into clean numeric data
