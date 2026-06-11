@@ -1,4 +1,5 @@
 import numpy as np
+from database import get_db_connection
 from scraping import Scraping, CrawlbaseScrape, PlayWrightScraping
 from outlier_filter import OutlierFilter
 from sites import mercado_libre_mx as ml_mx
@@ -17,9 +18,8 @@ total_data = []
 
 for site in sites:
   clean_data = OutlierFilter(site)
-  total_data.append(clean_data)
+  total_data += clean_data
 
 # Calculate average price from filtered data
 np_average = np.mean(total_data)
-
 print(f"Average Price: {np_average}")
