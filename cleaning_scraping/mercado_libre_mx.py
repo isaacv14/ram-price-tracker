@@ -21,5 +21,8 @@ def cleaning_function(price_text):
   data_cleaned = price_text.replace(",","")
 
   # Convert to USD using the current exchange rate
-  usd_parse = int(data_cleaned) / currency_value
-  return str(usd_parse)
+  if currency_value:
+    usd_parse = int(data_cleaned) / currency_value
+    return str(usd_parse)
+  usd_parse = int(data_cleaned) / 17.5
+  print("Error fetching exchange rate. Using default conversion rate of 17.5 MXN to 1 USD.")
