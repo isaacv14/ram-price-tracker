@@ -25,7 +25,6 @@ data/processed/*
 *.xlsx
 *.jsonl
 *.parquet
-*.sql
 *.log
 
 # --- IDEs & OS ---
