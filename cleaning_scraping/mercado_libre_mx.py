@@ -24,5 +24,7 @@ def cleaning_function(price_text):
   if currency_value:
     usd_parse = int(data_cleaned) / currency_value
     return str(usd_parse)
+
   usd_parse = int(data_cleaned) / 17.5
   print("Error fetching exchange rate. Using default conversion rate of 17.5 MXN to 1 USD.")
+  return str(usd_parse)
