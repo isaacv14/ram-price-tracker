@@ -14,7 +14,9 @@ A scalable web scraping framework that tracks RAM memory prices across multiple 
 
 | Marketplace | Region | Status |
 |-------------|--------|--------|
-| Mercado Libre | Mexico | ✅ Active |
+| Amazon | USA | ✅ Active |
+| Ebay | USA | ✅ Active |
+| Mercado Libre | Mexico | ❌ Inactive |
 | *More coming soon...* | | |
 
 ## Prerequisites
