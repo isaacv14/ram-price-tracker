@@ -5,7 +5,7 @@ from playwright.sync_api import sync_playwright
 from dotenv import load_dotenv
 import os
 
-def Scraping(url, html_element, html_class, data_transformer):
+def Scraping(url, html_element, html_class, data_transformer, html_tag):
   """Scrape prices from a webpage and return as a list of integers."""
   # Extract HTML content
   headers = {
@@ -17,8 +17,13 @@ def Scraping(url, html_element, html_class, data_transformer):
     print(f"Error: Request failed with status {res.status_code}")
     return [] #empty list if request fails for avoid breaking the rest of the code
 
-  soup = BeautifulSoup(res.text, "html.parser")
-  prices = soup.find_all(html_element, class_=html_class)
+  # if there's a custom html tag, use it instead of html class for find the price element
+  if html_tag:
+    soup = BeautifulSoup(res.text, "html.parser")
+    prices = soup.select(html_tag)
+  else: # if html class is provided
+    soup = BeautifulSoup(res.text, "html.parser")
+    prices = soup.find_all(html_element, class_=html_class)
 
   # Transform raw HTML text into clean numeric data
   data = []
