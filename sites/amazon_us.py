@@ -3,7 +3,7 @@ html_element = "span"
 html_class = "a-price-whole"
 
 def cleaning_function(price_text):
-  """Clean price text and convert from MXN to USD."""
+  """Clean price text specific to Amazon US"""
   # Remove thousand separators
   data_cleaned = price_text.replace(",","").replace(".","").strip()
 
