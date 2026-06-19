@@ -5,7 +5,7 @@ from playwright.sync_api import sync_playwright
 from dotenv import load_dotenv
 import os
 
-def Scraping(url, html_element, html_class, data_transformer, html_tag):
+def Scraping(url, html_element, html_class, data_transformer):
   """Scrape prices from a webpage and return as a list of integers."""
   # Extract HTML content
   headers = {
@@ -17,13 +17,8 @@ def Scraping(url, html_element, html_class, data_transformer, html_tag):
     print(f"Error: Request failed with status {res.status_code}")
     return [] #empty list if request fails for avoid breaking the rest of the code
 
-  # if there's a custom html tag, use it instead of html class for find the price element
-  if html_tag:
-    soup = BeautifulSoup(res.text, "html.parser")
-    prices = soup.select(html_tag)
-  else: # if html class is provided
-    soup = BeautifulSoup(res.text, "html.parser")
-    prices = soup.find_all(html_element, class_=html_class)
+  soup = BeautifulSoup(res.text, "html.parser")
+  prices = soup.find_all(html_element, class_=html_class)
 
   # Transform raw HTML text into clean numeric data
   data = []
@@ -32,6 +27,8 @@ def Scraping(url, html_element, html_class, data_transformer, html_tag):
     price_text = price.text
     # Apply the site-specific cleaning function
     price_text = data_transformer(price_text)
+    if price_text is None:
+      continue # Skip this price if cleaning function returns None (e.g., due to conversion error)
     price_int = int(float(price_text))
     data.append(price_int)
 
@@ -70,6 +67,8 @@ def PlayWrightScraping(url, html_element, html_class, data_transformer):
     price_text = price.text
     # Apply the site-specific cleaning function
     price_text = data_transformer(price_text)
+    if price_text is None:
+      continue # Skip this price if cleaning function returns None (e.g., due to conversion error)
     price_int = int(float(price_text))
     data.append(price_int)
 
@@ -104,6 +103,8 @@ def CrawlbaseScrape(url, html_element, html_class, data_transformer):
         price_text = price.text
         # Apply the site-specific cleaning function
         price_text = data_transformer(price_text)
+        if price_text is None:
+          continue # Skip this price if cleaning function returns None (e.g., due to conversion error)
         price_int = int(float(price_text))
         data.append(price_int)
         
