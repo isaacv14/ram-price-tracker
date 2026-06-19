@@ -7,4 +7,10 @@ def cleaning_function(price_text):
   # Remove thousand separators
   data_cleaned = price_text.replace("$","").replace(",","").replace("USD1\xa0","").replace("USD","").strip()
 
+  # Try to convert cleaned string to float, return None if conversion fails
+  try:
+    data_cleaned = float(data_cleaned)
+  except ValueError:
+    return None
+
   return str(data_cleaned)
