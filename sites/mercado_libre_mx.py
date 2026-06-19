@@ -18,7 +18,7 @@ currency_value = currency_API.json().get('data').get('MXN').get('value')
 def cleaning_function(price_text):
   """Clean price text and convert from MXN to USD."""
   # Remove thousand separators
-  data_cleaned = price_text.replace(",","")
+  data_cleaned = price_text.replace(",","").strip()
 
   # Convert to USD using the current exchange rate
   if currency_value:
