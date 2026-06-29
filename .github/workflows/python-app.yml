@@ -1,0 +1,25 @@
+name: Daily Price Scrape
+on:
+  schedule:
+    - cron: '0 7 * * *'   # 7:00 AM UTC
+  workflow_dispatch:
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run scraper
+        env:
+          TIDB_USER: ${{ secrets.TIDB_USER }}
+          TIDB_PASSWORD: ${{ secrets.TIDB_PASSWORD }}
+          TIDB_HOST: ${{ secrets.TIDB_HOST }}
+          TIDB_PORT: ${{ secrets.TIDB_PORT }}
+          TIDB_DATABASE: ${{ secrets.TIDB_DATABASE }}
+          CRAWLBASE_API_KEY: ${{ secrets.CRAWLBASE_API_KEY }}
+          CURRENCY_MX_API_KEY: ${{ secrets.CURRENCY_MX_API_KEY }}
+        run: python main.py
