@@ -1,6 +1,6 @@
 import numpy as np
 
-def OutlierFilter(data_array):
+def OutlierFilter(data_array: list[int]) -> list[int]:
   # Calculate values at 35th and 95th percentiles
   if len(data_array) == 0:
     print("Warning: Empty data array provided to OutlierFilter.")
