@@ -9,9 +9,9 @@ from sites import bestbuy_us as bb_us
 
 # Configure sites to scrape (URL, HTML element, CSS class, cleaning function)
 sites = [
-  #Scraping(ml_mx.url, ml_mx.html_element, ml_mx.html_class, ml_mx.cleaning_function), --- SCRAPING DOESN'T WORK, FIX LATER ---
+  CrawlbaseScrape(ml_mx.url, ml_mx.html_element, ml_mx.html_class, ml_mx.cleaning_function),
   CrawlbaseScrape(am_us.url, am_us.html_element, am_us.html_class, am_us.cleaning_function),
-  PlayWrightScraping(eb_us.url, eb_us.html_element, eb_us.html_class, eb_us.cleaning_function),
+  CrawlbaseScrape(eb_us.url, eb_us.html_element, eb_us.html_class, eb_us.cleaning_function),
   CrawlbaseScrape(bb_us.url, bb_us.html_element, bb_us.html_class, bb_us.cleaning_function)
 ]
 
