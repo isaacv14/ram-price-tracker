@@ -22,7 +22,7 @@ config = {
 }
 
 # Establish connection as usual
-def get_db_connection(price):
+def insert_daily_price(price):
     try:
         conn = mysql.connector.connect(**config)
         print("Successfully connected securely using environment variables!")

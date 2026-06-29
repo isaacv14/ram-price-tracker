@@ -1,5 +1,5 @@
 import numpy as np
-from database import get_db_connection
+from database import insert_daily_price
 from scraping import Scraping, CrawlbaseScrape, PlayWrightScraping
 from outlier_filter import OutlierFilter
 from sites import mercado_libre_mx as ml_mx
@@ -28,6 +28,6 @@ final_average = round(np_average, 4)
 print(f"Average Price: {final_average}")
 
 if np_average > 0: # Only insert into database if we have a valid average price
-  get_db_connection(final_average)
+  insert_daily_price(final_average)
 else:
   print("No valid price data to insert into the database.") 
