@@ -1,16 +1,17 @@
 # RAM Price Tracker
 
-A scalable web scraping framework that tracks RAM memory prices across multiple marketplaces, filters outliers, and stores daily average prices in a TiDB cloud database.
+A scalable web scraping framework that tracks RAM memory prices across multiple marketplaces, analyzes price trends, and stores results in a TiDB database.
 
 ## Features
 
 - **Multi-Market Support**: Extensible architecture for scraping prices from Amazon, eBay, Best Buy, and Mercado Libre
-- **Multiple Scraping Strategies**: Direct HTTP requests, headless browser (Playwright), or anti-bot proxy (Crawlbase)
+- **Three Scraping Engines**: Requests + BeautifulSoup, Playwright (dynamic content), and Crawlbase (anti-scraping bypass)
 - **Currency Conversion**: Automatic MXN to USD conversion using CurrencyAPI
 - **Smart Filtering**: Outlier detection using percentile-based filtering (35th–95th percentile)
 - **Price Analysis**: Statistical analysis with NumPy for accurate average calculations
 - **Database Storage**: Daily price averages persisted to TiDB (MySQL-compatible) cloud database
 - **Automated Pipeline**: Daily execution via GitHub Actions scheduled workflow
+- **Modular Design**: Easy to add new markets and data sources
 
 ## Supported Markets
 
@@ -19,13 +20,13 @@ A scalable web scraping framework that tracks RAM memory prices across multiple 
 | Amazon       | USA    | ✅ Active  |
 | eBay         | USA    | ✅ Active  |
 | Best Buy     | USA    | ✅ Active  |
-| Mercado Libre| Mexico | ❌ Inactive|
+| Mercado Libre| Mexico | ✅ Active  |
 
 ## Prerequisites
 
 - Python 3.x
+- A [Crawlbase](https://crawlbase.com/) API key
 - A [CurrencyAPI](https://currencyapi.com/) API key (for MXN → USD conversion)
-- A [Crawlbase](https://crawlbase.com/) API key (for anti-bot scraping)
 - A [TiDB Cloud](https://tidbcloud.com/) database (for storing results)
 
 ## Installation
@@ -41,7 +42,7 @@ A scalable web scraping framework that tracks RAM memory prices across multiple 
    pip install -r requirements.txt
    ```
 
-3. Install Playwright Chromium browser:
+3. Install Playwright browser binaries:
    ```bash
    playwright install chromium
    ```
@@ -74,6 +75,12 @@ Run the full pipeline:
 python main.py
 ```
 
+The script will:
+1. Scrape RAM prices from all configured marketplaces
+2. Filter outliers per site (35th–95th percentile)
+3. Calculate the overall average price
+4. Insert the daily average into the database
+
 For debugging a specific URL (inspect raw HTML and parsed prices):
 ```bash
 python pytest.py
@@ -83,18 +90,18 @@ python pytest.py
 
 ```
 .
-├── main.py                          # Entry point — orchestrates scraping, filtering, and DB insertion
-├── scraping.py                      # Web scraping logic (requests, Playwright, Crawlbase)
+├── main.py                          # Entry point — orchestrates scraping, filtering, and DB insert
+├── scraping.py                      # Scraping engines (requests, Playwright, Crawlbase)
 ├── outlier_filter.py                # Outlier filtering using percentiles
-├── database.py                      # TiDB connection and insert logic
-├── schema.sql                       # Database DDL
-├── pytest.py                        # Debug scraper for inspecting page structure
-├── sites/                           # Marketplace adapter modules
+├── database.py                      # TiDB connection and daily price insert
+├── schema.sql                       # Database table schema
+├── pytest.py                        # Debug script for testing scrapers
+├── sites/                           # Marketplace adapters
 │   ├── __init__.py
 │   ├── amazon_us.py                 # Amazon US adapter
 │   ├── ebay_us.py                   # eBay US adapter
 │   ├── bestbuy_us.py                # Best Buy US adapter
-│   └── mercado_libre_mx.py          # Mercado Libre Mexico adapter
+│   └── mercado_libre_mx.py          # Mercado Libre Mexico adapter (with MXN→USD conversion)
 ├── .github/workflows/
 │   └── python-app.yml               # GitHub Actions scheduled workflow
 ├── .env                             # Environment variables (gitignored)
@@ -108,21 +115,28 @@ python pytest.py
 The modular architecture makes it easy to add new marketplaces:
 
 1. Create a new adapter file in `sites/` (e.g., `newegg_us.py`)
-2. Define the market-specific URL, CSS selector, and price cleaning function
-3. Import and register the new market in `main.py`
+2. Define `url`, `html_element`, `html_class`, and a `cleaning_function`
+3. Import the adapter and add it to the `sites` list in `main.py`
+
+## Scraping Methods
+
+- **`Scraping`** — Basic requests + BeautifulSoup for simple pages
+- **`PlayWrightScraping`** — Headless Chromium for JavaScript-rendered content
+- **`CrawlbaseScrape`** — Crawlbase API for sites with aggressive anti-scraping measures
 
 ## How It Works
 
-1. **Scraping**: Fetches product listings from each marketplace using Crawlbase (or Playwright/requests as fallback) and extracts price elements
+1. **Scraping**: Fetches product listings from configured marketplaces using Crawlbase (or Playwright/requests as fallback) and extracts price elements
 2. **Cleaning**: Normalizes price formats and converts MXN to USD via CurrencyAPI
-3. **Filtering**: Removes outlier prices below the 35th percentile and above the 95th percentile
-4. **Analysis**: Calculates the mean price from the filtered data
-5. **Storage**: Inserts the daily average price into a TiDB database table with a timestamp
+3. **Filtering**: Removes outlier prices below the 35th percentile and above the 95th percentile per site
+4. **Analysis**: Calculates the mean price from the filtered data across all active markets
+5. **Storage**: Inserts the daily average price into TiDB for historical tracking
 
 ## TODO
 
-- [ ] Add more marketplaces (Newegg, B&H, etc.)
+- [ ] Add more marketplaces (Newegg, Micro Center, B&H, etc.)
 - [ ] Add price history charting / visualization
-- [ ] Add error handling and retries
+- [ ] Add error handling and retries with backoff
 - [ ] Add logging
+- [ ] Add data visualization / dashboard
 - [ ] Add price alerts / notifications
